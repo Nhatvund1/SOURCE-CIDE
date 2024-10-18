@@ -1,0 +1,143 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Admin.master.cs" Inherits="adm_Admin" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="NOINDEX, NOFOLLOW" />
+    <title>Admin | Trang quản trị</title>
+    <%--<link rel="icon" href="../favicon.ico" type="image/x-icon" />--%>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/css/jquery-ui.min.css" rel="stylesheet" />
+    <link href="/css/cangas.datepicker.css" rel="stylesheet" />
+    <link href="/css/bootstrap-select.min.css" rel="stylesheet" />
+    <link href="/css/jquery.mCustomScrollbar.min.css" rel="stylesheet" />
+    <link href="/css/admin-style.css" rel="stylesheet" />
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+    <script src="/js/jquery.ui.datepicker-vi-VN.js"></script>
+    <script src="/ckfinder/ckfinder.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <script src="/js/bootstrap-select.min.js"></script>
+    <script src="/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="/js/ad_js.js"></script>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ScriptManager ID="ScriptManager1" EnablePartialRendering="true" runat="server"></asp:ScriptManager>
+        <div id="top">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="top-left">
+                            <span>Xin chào:
+                                <asp:Literal ID="liFullName" runat="server"></asp:Literal></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="top-right">
+                            <a href="/ad/tin-tuc" class="btn btn-xs btn-link">Tin tức</a>
+                            <a href="/ad/thu-muc" class="btn btn-xs btn-link">Thư mục</a>
+                            <a href="/ad/tong-hop-tin" class="btn btn-xs btn-link">Tổng hợp tin</a>
+                            <a href="/ad/lien-he" class="btn btn-xs btn-link">Liên hệ</a>
+                            <a class="btn btn-xs btn-link" onclick="change_pass()">Đổi mật khẩu</a>
+                            <input type="button" class="btn btn-xs btn-link" value="Thoát" onclick="sign_out()" />
+                            <asp:Button ID="btnSignOut" runat="server" Text="Thoát" CssClass="sr-only" OnClick="btnSignOut_Click" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="main">
+            <asp:ContentPlaceHolder ID="Ad" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>
+    <%--Change password--%>
+    <div id="pass-change">
+        <iframe id="ifpasschange" src="/adm/PasswordChange.aspx" style="border: none; min-width: 100%; height: 98%;"></iframe>
+    </div>
+    <%--Message--%>
+    <div id="dialog-message" title="Thông báo">
+        <span id="dialog-message-content"></span>
+    </div>
+    <%--Confirm--%>
+    <div id="dialog-confirm" title="Xác nhận?">
+        <span id="dialog-confirm-content"></span>
+    </div>
+    <%--Message--%>
+    <div id="waiting-message" title="Thông báo">
+        <span><i class="fa fa-fw fa-spinner fa-pulse"></i>Đang xử lý...!</span>
+    </div>
+</body>
+<script>
+    jQuery(function () {
+        setInterval(KeepSessionAlive, 10000);
+    });
+
+    function KeepSessionAlive() {
+        jQuery.post("/adm/KeepSessionAlive.ashx", null, function () {
+        });
+    }
+
+    function change_pass() {
+        document.getElementById('ifpasschange').src += '';
+        $('#pass-change').dialog({
+            modal: true,
+            title: 'Thay đổi mật khẩu',
+            width: 350,
+            height: 322,
+            resizable: false,
+            draggable: false,
+            show: {
+                effect: "fade",
+                duration: 300
+            },
+            hide: {
+                effect: "fade",
+                duration: 300
+            }
+        });
+    }
+
+    function close_pass_change() {
+        $('#pass-change').dialog('close');
+    }
+
+    function sign_out() {
+        $('#dialog-confirm-content').html('Bạn có chắc chắn muốn đăng xuất không?');
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            height: "auto",
+            width: 400,
+            resizable: false,
+            draggable: false,
+            show: {
+                effect: "fade",
+                duration: 300
+            },
+            hide: {
+                effect: "fade",
+                duration: 300
+            },
+            modal: true,
+            buttons: {
+                "Đồng ý": function () {
+                    $("#btnSignOut").click();
+                    $(this).dialog("close");
+                },
+                'Bỏ qua': function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    }
+</script>
+</html>
